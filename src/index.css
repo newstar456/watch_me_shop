@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+}
+
+button,
+select {
+    font: inherit;
+}
+
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.main,
+.header,
+.footer {
+    margin: 0 0;
+}
+
+.hedaer{
+    background: linear-gradient(to bottom, #FFF8F7 60%, transparent 100%);
+  backdrop-filter: blur(6px);
+}
+
+.header__cart{
+    color: #A74014;
+    cursor:pointer;
+    padding: 0;
+}
+.header__logo{
+    width: 100px;
+    height: 100px;
+}
+
+.header__title-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+}
+
+.header__price-box {
+    text-align: right;
+    font-size:smaller;
+    font-weight: 700;
+    color: rgb(32, 31, 31);
+}
+
+.footer {
+    flex-grow: 1;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-end;
+}
+
+.cart__button {
+    justify-self: flex-end;
+}
+
+.cart__totals {
+    display: flex;
+    flex-flow: column;
+    gap: 1em;
+    text-align: right;
+    padding-top: 16px;
+}
+
+@media screen and (min-width: 601px) {
+    .cart__item {
+        grid-template-columns: 3fr 15fr 5fr 1fr 8fr 1fr;
+    }
+
+    .cart__img, .cart__item-subtotal {
+        display: block;
+    }
+
+}
