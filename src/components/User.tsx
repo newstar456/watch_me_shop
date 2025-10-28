@@ -4,9 +4,9 @@ export const BasicUserSchema = z.object({
     name: z
         .string().trim()
         .min(2, { message: "Name must be 2 or more characters long" }),
-    username: z
-        .string().trim().toLowerCase()
-        .min(4, { message: "Username must be 4 or more characters long" }),
+    // username: z
+    //     .string().trim().toLowerCase()
+    //     .min(4, { message: "Username must be 4 or more characters long" }),
     email: z.string().email().trim().toLowerCase(),
     phone: z
         .string()
@@ -15,15 +15,25 @@ export const BasicUserSchema = z.object({
     // .length(10, { message: "Ten numbers are required" })
     // .transform(val => `${val.slice(0, 3)}-${val.slice(3, 6)}-${val.slice(6)}`),
     //website: z.string().trim().toLowerCase().url().optional(),
-    website: z.string().trim().toLowerCase()
-        .min(5, { message: "URLs must be a minimum of 5 characters" })
-        .refine(val => val.indexOf(".") !== -1, { message: "Invalid URL" })
-        .optional(),
-    company: z.object({
-        name: z.string().trim()
-            .min(5, { message: "Company name must be 5 or more characters long" }),
-        catchPhrase: z.string().optional(),
-    })
+    // website: z.string().trim().toLowerCase()
+    //     .min(5, { message: "URLs must be a minimum of 5 characters" })
+    //     .refine(val => val.indexOf(".") !== -1, { message: "Invalid URL" })
+    //     .optional(),
+    // company: z.object({
+    //     name: z.string().trim()
+    //         .min(5, { message: "Company name must be 5 or more characters long" }),
+    //     catchPhrase: z.string().optional(),
+    // })
+    street: z
+        .string().trim()
+        .min(5, { message: "Street must be 5 or more characters long" }),
+    suite: z.string().trim().optional(),
+    city: z
+        .string().trim()
+        .min(2, { message: "City must be 2 or more characters long" }),
+    zipcode: z
+        .string()
+        .regex(/^\d{5}(?:[-\s]\d{4})?$/, { message: "Must be 5 digit zip. Optional 4 digit extension allowed." }),
 })
 
 const UserAddressSchema = z.object({
@@ -56,6 +66,8 @@ export const UserSchemaWithAddress = UserFormSchemaWithAddress.merge(HasIDSchema
 export const UserSchemaWithGeo = BasicUserSchema.extend({ address: UserAddressSchemaWithGeo }).merge(HasIDSchema)
 
 export type UserFormWithAddress = z.infer<typeof UserFormSchemaWithAddress>
+
+export type UserBasicFormWithAddress = z.infer<typeof BasicUserSchema>
 
 export type UserWithAddress = z.infer<typeof UserSchemaWithAddress>
 

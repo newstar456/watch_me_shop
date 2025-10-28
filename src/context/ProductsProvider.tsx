@@ -26,7 +26,7 @@ export const ProductsProvider = ({children}: ChildrenType): ReactElement => {
     useEffect(() => {
       const fetchProducts = async () => {
         try {
-          const res = await fetch("http://localhost:3001/products");
+          const res = await fetch("https://6900d632ff8d792314bbb519.mockapi.io/api/products");
           const json = await res.json();
           const pexelsRes = await fetch(
            "https://api.pexels.com/v1/search?query=watches&per_page=30",

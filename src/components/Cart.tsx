@@ -27,11 +27,12 @@ const Cart = () => {
                 <p>Total Price: {totalCost}</p>
                 <button
                     disabled={!totalItems} 
-                    className="flex justify-end align-middle text-gray-900 hover:text-gray-800 "
+                    className="flex justify-end align-middle text-gray-900 hover:text-gray-800 cursor-pointer w-50"
+                    onClick={() => navigate("/submit-order")} 
                 >
                     Place Order
                     <span className='w-2 block'></span>
-                    <ArrowRight className="w-6! h-6! cursor-pointer " onClick={() => navigate("/submit-order")} />
+                    <ArrowRight className="w-6! h-6!" />
                 </button>
             </div>
         </main>

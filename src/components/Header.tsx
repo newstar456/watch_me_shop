@@ -12,9 +12,9 @@ const Header = () => {
 
   return (
     <header className="header flex items-center justify-between px-6! py-3! sm:px-8! md:px-16! lg:px-24! sticky top-0 z-50 bg-linear-to-b from-[#FFF8F7] via-[#FFF8F7]/80  to-transparent backdrop-blur-sm shadow-md">
-      <a href="/" className="flex items-center space-x-2">
-        <img src="/logo.png" alt="Logo" className="h-30 w-auto rounded-sm" />
-      </a>
+      <Link to="/" className="flex items-center space-x-2">
+        <img src={`${import.meta.env.BASE_URL}logo.png`} alt="Logo" className="h-30 w-auto rounded-sm" />
+      </Link>
       <nav className="flex just justify-center align-middle gap-14">
         <Link className="text-gray-800 font-light cursor-pointer" to="/">Home</Link>
         <Link className="text-gray-800 font-light cursor-pointer" to="/about">About Us</Link>

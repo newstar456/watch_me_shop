@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { SubmitHandler, useForm, FieldErrors, FieldValues, Path } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { UserFormSchemaWithAddress } from './User';
-import type { UserFormWithAddress } from './User';
+import { BasicUserSchema } from './User';
+import type { UserBasicFormWithAddress } from './User';
 import useCart from '../hooks/useCart';
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
@@ -10,14 +11,15 @@ export default function SubmitOrderForm() {
 
     const navigate = useNavigate();
     const {dispatch, REDUCER_ACTIONS, totalCost, cart} = useCart();
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const { register, handleSubmit, formState: { errors }, trigger } =
-      useForm<UserFormWithAddress>({
-        resolver: zodResolver(UserFormSchemaWithAddress),
+      useForm<UserBasicFormWithAddress>({
+        resolver: zodResolver(BasicUserSchema),
     });
 
-    const onSubmit: SubmitHandler<UserFormWithAddress> = async (formData: UserFormWithAddress) => {
+    const onSubmit: SubmitHandler<UserBasicFormWithAddress> = async (formData: UserBasicFormWithAddress) => {
         try {
-          const res = await fetch("http://localhost:3001/orders", {
+          const res = await fetch("https://6900d632ff8d792314bbb519.mockapi.io/api/orders", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -31,7 +33,7 @@ export default function SubmitOrderForm() {
           if (!res.ok) throw new Error("Failed to submit order");
 
           dispatch({ type: REDUCER_ACTIONS.SUBMIT });
-          navigate("/thank-you");
+          setIsSubmitted(true);
         } catch (err) {
           console.error(err);
         }
@@ -56,22 +58,18 @@ export default function SubmitOrderForm() {
     }
 
       const fields: {
-        id: Path<UserFormWithAddress>;
+        id: Path<UserBasicFormWithAddress>;
         label: string;
         type: string;
         placeholder: string;
         }[] = [
           { id: "name", label: "Name", type: "text", placeholder: "John Doe" },
-          { id: "username", label: "Username", type: "text", placeholder: "johndoe90" },
           { id: "email", label: "Email", type: "email", placeholder: "johndoe90@hotmail.com" },
-          { id: "address.street", label: "Street", type: "text", placeholder: "555 Sycamore St." },
-          { id: "address.suite", label: "Suite/Apt", type: "text", placeholder: "212 B" },
-          { id: "address.city", label: "City", type: "text", placeholder: "Kansas City" },
-          { id: "address.zipcode", label: "Zip Code", type: "text", placeholder: "55555-1234" },
           { id: "phone", label: "Phone", type: "tel", placeholder: "555-555-5555" },
-          { id: "website", label: "Website", type: "text", placeholder: "https://your-website.com" },
-          { id: "company.name", label: "Company Name", type: "text", placeholder: "Acme Co." },
-          { id: "company.catchPhrase", label: "Company Slogan", type: "text", placeholder: "Coyote's One Stop Shop" },
+          { id: "street", label: "Street", type: "text", placeholder: "555 Sycamore St." },
+          { id: "suite", label: "Suite/Apt", type: "text", placeholder: "212 B" },
+          { id: "city", label: "City", type: "text", placeholder: "Kansas City" },
+          { id: "zipcode", label: "Zip Code", type: "text", placeholder: "55555-1234" }
         ];
     
     return (
@@ -79,7 +77,7 @@ export default function SubmitOrderForm() {
       <div className="w-full max-w-2xl flex items-center mb-8!">
         <button
           onClick={() => navigate("/cart")}
-          className="flex items-center text-gray-300 hover:text-white transition-colors"
+          className="flex items-center text-gray-300 hover:text-white transition-colors cursor-pointer"
         >
           <ArrowLeft className="mr-2! w-5 h-5" />
           Back to Cart
@@ -127,6 +125,22 @@ export default function SubmitOrderForm() {
           Submit Order
         </button>
       </form>
+      {isSubmitted && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-gray-900 text-white rounded-2xl p-8! max-w-md w-full shadow-2xl border border-gray-700">
+            <h2 className="text-2xl font-bold mb-2! text-green-400">Order Submitted!</h2>
+            <p className="text-gray-300 mb-6!">
+              Thank you for your purchase! You’ll receive confirmation shortly.
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              className="bg-red-800 hover:bg-red-700 text-white px-6! py-3! rounded-lg transition-all"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      )}
     </main>
 
     )

@@ -73,6 +73,7 @@ select {
     gap: 1em;
     text-align: right;
     padding-top: 16px;
+    align-items:end;
 }
 
 @media screen and (min-width: 601px) {
