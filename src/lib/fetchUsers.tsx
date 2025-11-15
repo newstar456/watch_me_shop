@@ -1,18 +1,43 @@
-import { UserSchemaWithGeo } from "../components/User"
-import { z } from 'zod'
+const BASE = "https://6900d632ff8d792314bbb519.mockapi.io/api";
 
-const UserResults = z.array(UserSchemaWithGeo)
+async function handleRes(res: Response) {
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    throw new Error(`${res.status} ${res.statusText} ${txt}`);
+  }
+  return res.json();
+}
 
-type UserArray = z.infer<typeof UserResults>
+export async function createOrder(order: unknown) {
+  const res = await fetch(`${BASE}/orders`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(order),
+  });
+  return handleRes(res);
+}
 
-export default async function fetchUsers(): Promise<UserArray | undefined> {
-    try {
-        const res = await fetch("https://jsonplaceholder.typicode.com/users");
-        if (!res.ok) return undefined;
-        const usersJson: UserArray = await res.json();
-        const parsedData = UserResults.parse(usersJson);
-        return parsedData;
-    } catch (err) {
-        if (err instanceof Error) console.log(err.stack);
-    }
+export async function getOrder(id: string) {
+  const res = await fetch(`${BASE}/orders/${id}`);
+  return handleRes(res);
+}
+
+export async function updateOrder(id: string, patch: unknown) {
+  const res = await fetch(`${BASE}/orders/${id}`, {
+    method: "PUT", 
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(patch),
+  });
+  return handleRes(res);
+}
+
+export async function deleteOrder(id: string) {
+  const res = await fetch(`${BASE}/orders/${id}`, { method: "DELETE" });
+  return handleRes(res);
+}
+
+export async function listOrders(query?: Record<string,string|number>) {
+  const qs = query ? "?" + new URLSearchParams(Object.entries(query).map(([k,v])=>[k,String(v)])) : "";
+  const res = await fetch(`${BASE}/orders${qs}`);
+  return handleRes(res);
 }

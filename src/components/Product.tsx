@@ -1,17 +1,16 @@
 // import { useState, useEffect } from "react";
-import { ProductType } from "../context/ProductsProvider";
-import { ReducerActionType, ReducerAction } from "../context/CartProvider";
+import { ProductType } from "../types";
+// import { ReducerActionType, ReducerAction } from "../context/CartProvider";
 import { ReactElement, memo, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useStore } from "../store/useStore";
 
-type PropsType = {
+type ProductProps = {
     product: ProductType,
-    dispatch: React.Dispatch<ReducerAction>,
-    REDUCER_ACTIONS: ReducerActionType,
     inCart: boolean,
   }
 
-const Product = ({product, dispatch, REDUCER_ACTIONS, inCart}:PropsType ): ReactElement => {
+const Product = ({product, inCart}:ProductProps ): ReactElement => {
 
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -19,8 +18,9 @@ const Product = ({product, dispatch, REDUCER_ACTIONS, inCart}:PropsType ): React
     offset: ["start 0.03", "0.2 start"], 
   });
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]); 
+  const addToCart = useStore((store) => store.addToCart);
   const onAddToCart = () => {
-      dispatch({ type: REDUCER_ACTIONS.ADD, payload: {...product, qty: 1} })
+    addToCart({ sku: product.sku, name: product.name, price: product.price, qty: 1, image: product.image });
   }
 
   const content = 
@@ -66,7 +66,7 @@ const Product = ({product, dispatch, REDUCER_ACTIONS, inCart}:PropsType ): React
   return content;
 }
 
-function areProductsEqual({product: prevProduct, inCart: prevInCart}: PropsType, {product: nextProduct, inCart: nextInCart}: PropsType){
+function areProductsEqual({product: prevProduct, inCart: prevInCart}: ProductProps, {product: nextProduct, inCart: nextInCart}: ProductProps){
     return (
         Object.keys(prevProduct).every(key =>{
             return prevProduct[key as keyof ProductType] === nextProduct[key as keyof ProductType]

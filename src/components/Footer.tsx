@@ -1,4 +1,4 @@
-import useCart from '../hooks/useCart';
+import { useStore } from "../store/useStore";
 import { ReactElement } from 'react';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 
@@ -7,7 +7,8 @@ type PropsType = {
 }
 
 const Footer = ({ viewCart }: PropsType): ReactElement => {
-    const { totalItems, totalCost } = useCart();
+    const totalItems = useStore((s) => s.totalItems()); 
+    const totalPrice = useStore((s) => s.totalCostFormatted());
     const year = new Date().getFullYear();
 
     return (
@@ -36,7 +37,7 @@ const Footer = ({ viewCart }: PropsType): ReactElement => {
                         <div className="mb-4">
                             <h3 className="text-lg font-bold mb-2!">Your Cart</h3>
                             <p className="text-md text-gray-200">Total Items: {totalItems}</p>
-                            <p className="text-md text-gray-200">Total Price: {totalCost}</p>
+                            <p className="text-md text-gray-200">Total Price: {totalPrice}</p>
                         </div>
                     )}
                     <div>

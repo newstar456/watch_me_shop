@@ -1,14 +1,15 @@
 import { ShoppingCart, Home } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import useCart from "../hooks/useCart";
+import { useStore } from "../store/useStore";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 
 const Header = () => {
 
-  const { totalItems, totalCost } = useCart();
-  const [viewCart, setViewCart] = useState<boolean>(false)
+  const [viewCart, setViewCart] = useState<boolean>(false);
+  const totalItems = useStore((s) => s.totalItems()); 
+  const totalPrice = useStore((s) => s.totalCostFormatted());
 
   return (
     <header className="header flex items-center justify-between px-6! py-3! sm:px-8! md:px-16! lg:px-24! sticky top-0 z-50 bg-linear-to-b from-[#FFF8F7] via-[#FFF8F7]/80  to-transparent backdrop-blur-sm shadow-md">
@@ -70,7 +71,7 @@ const Header = () => {
         </motion.button>
 
         <p className="text-sm text-gray-600 text-center w-full">
-          <span className="font-semibold">{totalCost}</span>
+          <span className="font-semibold">{totalPrice}</span>
         </p>
       </div>
 

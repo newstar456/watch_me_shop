@@ -1,38 +1,37 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm, FieldErrors, FieldValues, Path } from 'react-hook-form';
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { BasicUserSchema } from './User';
 import type { UserBasicFormWithAddress } from './User';
-import useCart from '../hooks/useCart';
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { useStore } from "../store/useStore";
+import { Order } from '../types';
+
 
 export default function SubmitOrderForm() {
 
     const navigate = useNavigate();
-    const {dispatch, REDUCER_ACTIONS, totalCost, cart} = useCart();
+    const cart = useStore((s) => s.cart);
+    const createOrder = useStore((s) => s.createOrder);
+    const clearCart = useStore((s) => s.clearCart);
+    const totalPrice = useStore((s) => s.totalCostFormatted());
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { register, handleSubmit, formState: { errors }, trigger } =
       useForm<UserBasicFormWithAddress>({
         resolver: zodResolver(BasicUserSchema),
     });
 
-    const onSubmit: SubmitHandler<UserBasicFormWithAddress> = async (formData: UserBasicFormWithAddress) => {
+    const onSubmit: SubmitHandler<UserBasicFormWithAddress> = async (formData) => {
         try {
-          const res = await fetch("https://6900d632ff8d792314bbb519.mockapi.io/api/orders", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...formData,
-              cart,
-              totalCost,
-              createdAt: new Date().toISOString(),
-            }),
-          });
-
-          if (!res.ok) throw new Error("Failed to submit order");
-
-          dispatch({ type: REDUCER_ACTIONS.SUBMIT });
+          const orderPayload: Omit<Order, "id"> = {
+            ...formData,
+            cart,
+            totalPrice
+          }
+          const id = await createOrder(orderPayload);
+          if(!id) return;
+          clearCart();
           setIsSubmitted(true);
         } catch (err) {
           console.error(err);
