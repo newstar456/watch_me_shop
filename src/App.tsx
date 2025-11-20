@@ -12,35 +12,35 @@ import { useStore } from "./store/useStore";
 
 function App() {
 
-  const productQuery = useStore((s) => s.productQuery);
-  const fetchProducts = useStore((s) => s.fetchProducts);
+  // const productQuery = useStore((s) => s.productQuery);
+  // const fetchProducts = useStore((s) => s.fetchProducts);
   const fetchProductsAll = useStore((s) => s.fetchProductsAll);
-  const fetchOrders = useStore((s) => s.fetchOrders);
-  const pexelsImages = useStore((s) => s.pexelsImages);
-  const setPexelsImages = useStore((s) => s.setPexelsImages);
+  // const fetchOrders = useStore((s) => s.fetchOrders);
+  // const pexelsImages = useStore((s) => s.pexelsImages);
+  // const setPexelsImages = useStore((s) => s.loadPexels);
 
   useEffect(() => {
-    fetchProducts();
+    // fetchProducts();
     fetchProductsAll();
-    fetchOrders();
-    const loadPexels = async () => {
-      if (pexelsImages.length > 0) return;
+    // fetchOrders();
+    // const loadPexels = async () => {
+    //   if (pexelsImages.length > 0) return;
 
-      const res = await fetch("https://api.pexels.com/v1/search?query=watches&per_page=30", {
-        headers: { Authorization: import.meta.env.VITE_PEXELS_KEY }
-      });
+    //   const res = await fetch("https://api.pexels.com/v1/search?query=watches&per_page=30", {
+    //     headers: { Authorization: import.meta.env.VITE_PEXELS_KEY }
+    //   });
 
-      const data = await res.json();
-      setPexelsImages(data.photos);
-    };
+    //   const data = await res.json();
+    //   setPexelsImages(data.photos);
+    // };
 
-    loadPexels();
+    // loadPexels();
   }, []);
 
-  useEffect(() => {
-    if (pexelsImages.length === 0) return; 
-    fetchProducts();
-  }, [productQuery.page, productQuery.limit, productQuery.sortBy, productQuery.order, productQuery.search ]);
+  // useEffect(() => {
+  //   if (pexelsImages.length === 0) return; 
+  //   // fetchProducts();
+  // }, [productQuery.page, productQuery.limit, productQuery.sortBy, productQuery.order, productQuery.search ]);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">

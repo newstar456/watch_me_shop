@@ -1,10 +1,14 @@
 import { useStore } from "../store/useStore";
-// import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Pagination = () => {
 
-  const { productsAll, productQuery, setProductQuery } = useStore();
-  const totalPages = Math.ceil(productsAll.length / 12);
+  const navigate = useNavigate();
+  const productQuery = useStore((s) => s.productQuery);
+  const setProductQuery = useStore((s) => s.setProductQuery);
+  const totalProducts = useStore(s => s.totalProducts);
+   const totalPages = Math.ceil(totalProducts / 12);
   const maxVisiblePages = 2;
   let startPage = Math.max(1, productQuery.page - Math.floor(maxVisiblePages / 2));
   let endPage = startPage + maxVisiblePages - 1;
@@ -15,7 +19,13 @@ const Pagination = () => {
   const pages = [];
   for (let i = startPage; i <= endPage; i++) pages.push(i);
 
-  const goToPage = (page: number) => setProductQuery({ page });
+  const setPage = (newPage: number) => {
+    setProductQuery({ page: newPage });
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", String(newPage));
+
+    navigate(`?${params.toString()}`);
+  };
 
   const nextPage = () => {
     if (productQuery.page < totalPages) {
@@ -29,9 +39,6 @@ const Pagination = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, [productQuery.page, productQuery.sortBy, productQuery.order, productQuery.search]);
 
   return (
     <div className="flex justify-center items-center gap-4 py-6!">
@@ -45,7 +52,7 @@ const Pagination = () => {
       </button>
       {startPage > 1 && (
         <>
-          <button onClick={() => goToPage(1)} disabled={productQuery.page === 1} className="px-4! py-2! bg-gray-300 text-gray-700 rounded disabled:bg-gray-100 font-extralight hover:cursor-pointer">
+          <button onClick={() => setPage(1)} disabled={productQuery.page === 1} className="px-4! py-2! bg-gray-300 text-gray-700 rounded disabled:bg-gray-100 font-extralight hover:cursor-pointer">
             1
           </button>
           {startPage > 2 && <span>...</span>}
@@ -56,7 +63,7 @@ const Pagination = () => {
           key={page}
           disabled={productQuery.page === page}
           className="px-4! py-2! bg-gray-300 text-gray-700 rounded disabled:bg-gray-100 font-extralight hover:cursor-pointer"
-          onClick={() => goToPage(page)}
+          onClick={() => setPage(page)}
         >
           {page }
         </button>
@@ -65,7 +72,7 @@ const Pagination = () => {
         <>
           {endPage < totalPages - 1 && <span>...</span>}
           <button
-            onClick={() => goToPage(totalPages)}
+            onClick={() => setPage(totalPages)}
             disabled={productQuery.page === totalPages}
             className="px-4! py-2! bg-gray-300 text-gray-700 rounded disabled:bg-gray-100 font-extralight hover:cursor-pointer"
           >

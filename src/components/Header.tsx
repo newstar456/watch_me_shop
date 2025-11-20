@@ -71,7 +71,7 @@ const Header = () => {
         </motion.button>
 
         <p className="text-sm text-gray-600 text-center w-full">
-          <span className="font-semibold">{totalPrice}</span>
+          <span className="font-semibold">{totalPrice.toFixed(2)}</span>
         </p>
       </div>
 

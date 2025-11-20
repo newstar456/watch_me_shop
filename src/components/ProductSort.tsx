@@ -2,12 +2,12 @@ import { useStore } from "../store/useStore";
 
 const ProductSort = () => {
     
-  const { setProductQuery, fetchProducts } = useStore();
+  const { setProductQuery, processProducts } = useStore();
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const [sortBy, order] = e.target.value.split("-");
     setProductQuery({ sortBy, order: order as "asc" | "desc" });
-    fetchProducts();
+    processProducts();
   };
 
   return (

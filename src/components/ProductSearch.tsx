@@ -1,21 +1,27 @@
+import React, { useState, useEffect } from "react";
+import useDebounce from "../hooks/useDebounce";
 import { useStore } from "../store/useStore";
 
-const ProductSearch = () => {
-    
-  const { setProductQuery } = useStore();
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-    setProductQuery({ search: e.target.value, page: 1 });
-    // fetchProducts();
-  };
+const ProductSearch = () => {
+
+  const [q, setQ] = useState("");
+  const debouncedQ = useDebounce(q, 350);
+  const { setProductQuery } = useStore();
+//   const {productQuery} = useStore((s) => s);
+
+  useEffect(() => {
+    setProductQuery({ search: debouncedQ, page: 1 });
+  }, [debouncedQ, setProductQuery]);
+
 
   return (
     <div className="px-4 py-4">
       <input
+        value={q}
+        onChange={e => setQ(e.target.value)}
         type="text"
         placeholder="Search products..."
-        onChange={handleInput}
         className="border p-2 w-full rounded"
       />
     </div>
